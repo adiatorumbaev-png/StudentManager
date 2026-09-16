@@ -1,0 +1,5 @@
+<<<<<<< HEAD
+Пишите нам: help@mail.com
+=======
+Контакт: support@github.com
+>>>>>>> iss53
