@@ -1,5 +1,2 @@
-<<<<<<< HEAD
-Пишите нам: help@mail.com
-=======
-Контакт: support@github.com
->>>>>>> iss53
+Project notes
+Change from testing
