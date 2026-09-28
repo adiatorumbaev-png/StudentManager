@@ -31,7 +31,7 @@ jobs:
             <h1>Привет! Сайт обновлён через GitHub Actions</h1>
             <p>Автор: ${{ github.actor }}</p>
             <p>Ветка: ${{ github.ref_name }}</p>
-            <p>Время: $(date '+%d.%m.%Y %H:%M:%S')</p>
+            <p>Время: $(TZ='UTC-5' date '+%d.%m.%Y %H:%M:%S')</p>
           </body>
           </html>
           EOF
