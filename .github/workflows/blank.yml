@@ -16,11 +16,25 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    outputs:
-      page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Получить код
-        uses: actions/checkout@v4
+      - name: Создать index.html
+        run: |
+          mkdir site
+          cat > site/index.html << EOF
+          <!DOCTYPE html>
+          <html lang="ru">
+          <head>
+            <meta charset="UTF-8">
+            <title>Привет</title>
+          </head>
+          <body>
+            <h1>Привет! Сайт обновлён через GitHub Actions</h1>
+            <p>Автор: ${{ github.actor }}</p>
+            <p>Ветка: ${{ github.ref_name }}</p>
+            <p>Время: $(date '+%d.%m.%Y %H:%M:%S')</p>
+          </body>
+          </html>
+          EOF
 
       - name: Настроить Pages
         uses: actions/configure-pages@v5
@@ -28,30 +42,8 @@ jobs:
       - name: Загрузить файлы сайта
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: site
 
       - name: Опубликовать на GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-  notify:
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Отправить ссылку в WhatsApp
-        env:
-          API_URL: ${{ secrets.GREEN_API_URL }}
-          ID: ${{ secrets.GREEN_ID_INSTANCE }}
-          TOKEN: ${{ secrets.GREEN_API_TOKEN }}
-          CHAT_ID: ${{ secrets.WHATSAPP_CHAT_ID }}
-          TEXT: |
-            ✅ Сайт обновлён!
-            Автор: ${{ github.actor }}
-            Коммит: ${{ github.event.head_commit.message }}
-            Ссылка: ${{ needs.deploy.outputs.page_url }}
-        run: |
-          jq -n --arg chat "$CHAT_ID" --arg msg "$TEXT" \
-            '{chatId: $chat, message: $msg}' > body.json
-          curl -sf -X POST "$API_URL/waInstance$ID/sendMessage/$TOKEN" \
-            -H "Content-Type: application/json" \
-            -d @body.json 
